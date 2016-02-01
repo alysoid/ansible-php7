@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+/var/log/php7.0-fpm.log /var/log/php7.0-fpm/*.log {
+	rotate 12
+	weekly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	postrotate
+{% if php7_register_reopenlogs.stat.exists %}
+		/usr/lib/php/php7.0-fpm-reopenlogs
+{% else %}
+		invoke-rc.d php7.0-fpm reopen-logs > /dev/null
+{% endif %}
+	endscript
+}

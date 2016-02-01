@@ -1,0 +1,15 @@
+---
+
+- name: Install Xdebug
+  apt:
+    pkg: php-xdebug
+    state: 'latest'
+
+- name: Setup Xdebug configuration file
+  template:
+    src: 'etc/php/7.0/fpm/mods-available/xdebug.ini.j2'
+    dest: '/etc/php/7.0/fpm/mods-available/{{ item.name }}.ini'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: [ 'Reload php7.0-fpm' ]

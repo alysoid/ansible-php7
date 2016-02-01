@@ -1,0 +1,137 @@
+---
+# Settings for socket permissions
+# Sockets have to be accessible by a webserver
+php7_socket_listen_owner: 'www-data'
+php7_socket_listen_group: 'www-data'
+php7_socket_listen_mode: '0660'
+
+# Memory limit
+php7_memory_limit: '128M'
+
+# Install set of standard packages
+php7_packages: [ 'php7.0-curl', 'php7.0-gd', 'php7.0-mcrypt' ]
+
+# This variable determines what options will be used in php.ini for options
+# that can be useful either in production or development environment
+php7_production: True
+
+# Default values for several global PHP7 options
+php7_max_execution_time: '30s'
+php7_max_input_time: '60s'
+php7_post_max_size: '8M'
+php7_default_charset: 'UTF-8'
+php7_file_uploads: 'On'
+php7_upload_max_filesize: '{{ php7_post_max_size }}'
+php7_max_file_uploads: 20
+php7_max_input_vars: 1000
+php7_sendmail_path: /usr/sbin/ssmtp -t
+php7_session_save_path: /tmp
+
+# Default values used in pools when pool has none set
+php7_default_pm: 'dynamic'
+php7_default_pm_max_children: 5
+php7_default_pm_start_servers: 1
+php7_default_pm_min_spare_servers: 1
+php7_default_pm_max_spare_servers: 3
+php7_default_pm_process_idle_timeout: '10s'
+php7_default_pm_max_requests: 500
+php7_default_pm_status: False
+php7_default_pm_status_path: '/php7.0_status'
+php7_default_ping_path: '/php7.0_ping'
+php7_default_ping_response: 'pong'
+php7_default_rlimit_files: 1024
+php7_default_rlimit_core: 0
+
+php7_opcache_enable: 1
+php7_opcache_enable_cli: 1
+php7_opcache_fast_shutdown: 1
+php7_opcache_interned_strings_buffer: 8
+php7_opcache_max_accelerated_files: 4000
+php7_opcache_memory_consumption: 128
+php7_opcache_revalidate_freq: 60
+
+php7_xdebug_remote_enable: "false"
+php7_xdebug_remote_connect_back: "false"
+php7_xdebug_remote_host: localhost
+php7_xdebug_remote_port: "9000"
+php7_xdebug_remote_log: /tmp/xdebug.log
+php7_xdebug_idekey: XDEBUG
+php7_xdebug_max_nesting_level: 200
+
+# Should php7 role manage server pools?
+php7_manage_pools: True
+
+# List of managed pools
+php7_pools: [ '{{ php7_pool_default }}' ]
+
+# Default PHP7.0-FPM pool for www-data, explanation of variables can be found
+# in templates/etc/php/7.0/fpm/pool-available.d/pool.conf.j2
+# Everything commented out is optional.
+php7_pool_default:
+  enabled: True
+  name: 'www-data'
+
+  #prefix: ''
+
+  #user: 'www-data'
+  #group: 'www-data'
+
+  #listen: '/var/run/php7.0-fpm-www-data.sock'
+
+  # pm: static, dynamic, ondemand
+  #pm: 'ondemand'
+
+  # Settings for all management types
+  #pm_max_children: 5
+
+  # Settings for 'dynamic' process management
+  #pm_min_spare_servers: 1
+  #pm_max_spare_servers: 3
+  #pm_start_servers: 2
+
+  # Settings for 'ondemand' process management
+  #pm_process_idle_timeout: '30s'
+
+  #pm_max_requests: 500
+
+  #pm_status: True
+  #pm_status_path: '{{ php7_default_pm_status_path }}'
+  #ping_path: '{{ php7_default_ping_path }}'
+  #ping_response: '{{ php7_default_ping_response }}'
+
+  #accesslog: True
+
+  #request_slowlog_timeout: '30s'
+
+  #request_terminate_timeout: '5m'
+
+  #rlimit_files: 1024
+  #rlimit_core: 0
+
+  #chroot: ''
+  #chdir: '/'
+
+  #catch_workers_output: False
+
+  #security_limit_extensions: '.php'
+
+  #environment:
+  #  HOSTNAME: '$HOSTNAME'
+  #  PATH: '/usr/local/bin:/usr/bin:/bin'
+  #  TMP: '/tmp'
+  #  TMPDIR: '/tmp'
+  #  TEMP: '/tmp'
+
+  #php_flag:
+  #  display_errors: 'off'
+
+  #php_value:
+  #  default_mimetype: 'text/html'
+
+  #php_admin_flag:
+  #  log_errors: 'on'
+
+  #php_admin_value:
+  #  memory_limit: '32M'
+
+  #open_basedir: '/usr/share/php7.0:/tmp'

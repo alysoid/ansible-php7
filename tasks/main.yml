@@ -1,0 +1,77 @@
+---
+
+- name: Get current timezone from the host
+  slurp:
+    src: '/etc/timezone'
+  register: php7_etc_timezone
+
+- name: Make sure php7.0-fpm support is installed
+  apt:
+    pkg: '{{ item }}'
+    state: 'latest'
+    install_recommends: no
+  with_items: [ 'php7.0-fpm', 'php7.0-cli' ]
+
+- name: Install php7.0 packages
+  apt:
+    pkg: '{{ item }}'
+    state: 'latest'
+    install_recommends: no
+  with_items: php7_packages
+  when: php7_packages is defined and php7_packages
+  notify: ['Restart php7.0-fpm']
+
+- name: Create directory for php7.0-fpm logs
+  file:
+    path: '/var/log/php7.0-fpm'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0700'
+
+- name: Check existence of php7.0-fpm-reopenlogs
+  stat:
+    path: '/usr/lib/php/php7.0-fpm-reopenlogs'
+  register: php7_register_reopenlogs
+
+- name: Configure logrotate for php7.0-fpm
+  template:
+    src: 'etc/logrotate.d/php7.0-fpm.j2'
+    dest: '/etc/logrotate.d/php7.0-fpm'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+- name: Configure php.ini for php7.0-fpm
+  template:
+    src: 'etc/php/7.0/fpm/php.ini.j2'
+    dest: '/etc/php/7.0/fpm/php.ini'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: Restart php7.0-fpm
+
+- name: Check if pool-available.d/ directory exists
+  stat:
+    path: '/etc/php/7.0/fpm/pool-available.d'
+  register: pool_available_d
+
+- name: Remove default php7.0-fpm pool if exists
+  file:
+    path: '/etc/php/7.0/fpm/pool.d/www.conf'
+    state: absent
+  when: pool_available_d.stat.exists is defined and pool_available_d.stat.exists == False
+
+- name: Create pool-available.d/ directory for php7.0-fpm
+  file:
+    path: '/etc/php/7.0/fpm/pool-available.d'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+- include: php7_pools.yml
+  when: php7_manage_pools is defined and php7_manage_pools == True
+
+- include: php7_xdebug.yml
+  when: php7_production is defined and php7_production == False

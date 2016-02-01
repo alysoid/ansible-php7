@@ -1,0 +1,12 @@
+; {{ ansible_managed }}
+
+[XDebug]
+zend_extension="xdebug.so"
+xdebug.remote_enable={{ php7_xdebug_remote_enable }}
+xdebug.remote_connect_back={{ php7_xdebug_remote_connect_back }}
+xdebug.remote_host={{ php7_xdebug_remote_host }}
+xdebug.remote_port={{ php7_xdebug_remote_port }}
+xdebug.remote_handler="dbgp"
+xdebug.remote_log={{ php7_xdebug_remote_log }}
+xdebug.idekey="{{ php7_xdebug_idekey }}"
+xdebug.max_nesting_level = {{ php7_xdebug_max_nesting_level }}

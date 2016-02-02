@@ -24,7 +24,7 @@ php7_file_uploads: 'On'
 php7_upload_max_filesize: '{{ php7_post_max_size }}'
 php7_max_file_uploads: 20
 php7_max_input_vars: 1000
-php7_sendmail_path: /usr/sbin/ssmtp -t
+php7_sendmail_path: /usr/sbin/sendmail -t -i
 php7_session_save_path: /tmp
 
 # Default values used in pools when pool has none set

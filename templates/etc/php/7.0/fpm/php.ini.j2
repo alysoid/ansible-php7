@@ -1,9 +1,6 @@
 ; {{ ansible_managed }}
 
 [PHP]
-error_reporting = {% if php7_production is defined and php7_production %}E_ALL & ~E_DEPRECATED & ~E_STRICT{% else %}E_ALL{% endif %}
-display_errors = {% if php7_production is defined and php7_production %}Off{% else %}On{% endif %}
-display_startup_errors = {% if php7_production is defined and php7_production %}Off{% else %}On{% endif %}
 max_execution_time = {{ php7_max_execution_time }}
 max_input_time = {{ php7_max_input_time }}
 max_input_vars = {{ php7_max_input_vars }}
@@ -11,12 +8,24 @@ memory_limit = {{ php7_memory_limit }}
 post_max_size = {{ php7_post_max_size }}
 sendmail_path = {{ php7_sendmail_path }}
 session.save_path = {{ php7_session_save_path }}
-track_errors = {% if php7_production is defined and php7_production %}Off{% else %}On{% endif %}
 upload_max_filesize = {{ php7_upload_max_filesize }}
 max_file_uploads = {{ php7_max_file_uploads }}
-expose_php = {% if php7_production is defined and php7_production|bool %}Off{% else %}On{% endif %}
 date.timezone = {{ php7_etc_timezone.content | b64decode | trim }}
 default_charset = "{{ php7_default_charset }}"
+
+{% if php7_production is defined and php7_production %}
+error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
+display_errors = Off
+display_startup_errors = Off
+track_errors = Off
+expose_php = Off
+{% else %}
+error_reporting = E_ALL
+display_errors = On
+display_startup_errors = On
+track_errors = On
+expose_php = On
+{% endif %}
 
 [mysqlnd]
 mysqlnd.collect_memory_statistics = Off
